@@ -1,7 +1,189 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CityPulse — Smart City Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
 <body>
-<h1>Hello CityPulse</h1>
-<script src="js/app.js"></script>
+  <header class="topbar">
+    <div class="brand">CityPulse</div>
+
+    <nav class="nav" role="navigation" aria-label="Main">
+      <button class="nav-btn active" data-target="page1">Dashboard</button>
+      <button class="nav-btn" data-target="page2">Alerts</button>
+      <button class="nav-btn" data-target="page3">City Map</button>
+      <button class="nav-btn" data-target="page4">Feedback</button>
+    </nav>
+
+    <div class="controls">
+      <button id="themeToggle" class="control-btn" aria-label="Toggle theme">Theme</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- PAGE 1: DASHBOARD -->
+    <section id="page1" class="page active" aria-labelledby="dashTitle">
+      <h1 id="dashTitle" class="page-title">City Dashboard Overview</h1>
+
+      <div class="dashboard-grid">
+        <div class="card" id="tempCard" role="region" aria-label="Temperature">
+          <div class="card-title">
+            <img src="assets/icons/weather icon png.png" alt="" class="icon"> Temperature
+          </div>
+          <div class="card-value" id="temperatureValue">-- °C</div>
+          <div class="card-meta" id="tempMeta">Feels like --</div>
+        </div>
+
+        <div class="card" id="aqiCard" role="region" aria-label="Air Quality Index">
+          <div class="card-title">
+            <img src="assets/icons/aqi meter icon png.jpg" alt="" class="icon"> Air Quality Index
+          </div>
+          <div class="meter-bg"><div id="aqiMeter" class="meter-fill"></div></div>
+          <div class="card-value" id="aqiValue">--</div>
+          <div class="card-meta" id="aqiLabel">Status: --</div>
+        </div>
+
+        <div class="card" id="trafficCard" role="region" aria-label="Traffic Density">
+          <div class="card-title">
+            <img src="assets/icons/traffic icon png.png" alt="" class="icon"> Traffic Density
+          </div>
+          <div class="meter-bg"><div id="trafficMeter" class="meter-fill"></div></div>
+          <div class="card-value" id="trafficValue">--%</div>
+          <div class="card-meta" id="trafficLabel">Flow: --</div>
+        </div>
+
+        <div class="card" id="clockCard" role="region" aria-label="Current Time">
+          <div class="card-title">
+            <img src="assets/icons/city icon png.png" alt="" class="icon"> Current Time
+          </div>
+          <div class="card-value" id="liveClock">--:--:--</div>
+          <div class="card-meta" id="liveDate">--</div>
+        </div>
+      </div>
+
+      <div class="update-row">
+        <div class="update-time">Last updated: <span id="updateTimestamp">--</span></div>
+        <div class="status-note">Data simulated client-side (no backend)</div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: ALERTS -->
+    <section id="page2" class="page" aria-labelledby="alertsTitle">
+      <h1 id="alertsTitle" class="page-title">City Alerts & News</h1>
+
+      <div class="news-ticker" aria-hidden="true"><div id="tickerContent"></div></div>
+
+      <div class="controls-row">
+        <div class="filter-bar" role="toolbar" aria-label="Alert filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="traffic">Traffic</button>
+          <button class="filter-btn" data-filter="weather">Weather</button>
+          <button class="filter-btn" data-filter="health">Health</button>
+          <button class="filter-btn" data-filter="public">Public Notice</button>
+        </div>
+
+        <div class="sort-block">
+          <label for="sortSelect">Sort</label>
+          <select id="sortSelect" aria-label="Sort alerts">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="alertList" class="alert-list" aria-live="polite"></div>
+    </section>
+
+    <!-- PAGE 3: CITY MAP (Blueprint image + hotspots) -->
+    <section id="page3" class="page" aria-labelledby="mapTitle">
+      <h1 id="mapTitle" class="page-title">Interactive City Map</h1>
+
+      <div class="map-controls">
+        <button id="zoomIn" class="map-ctl">＋</button>
+        <button id="zoomOut" class="map-ctl">−</button>
+        <button id="resetView" class="map-ctl">Reset</button>
+        <div class="map-hint">Drag to pan • Scroll to zoom</div>
+      </div>
+
+      <div class="map-blueprint-container card" id="mapContainer">
+        <!-- wrapper to apply transform (pan+zoom) -->
+        <div id="mapWrapper" class="map-wrapper">
+          <img src="assets/map/city-blueprint.jpg" alt="City map blueprint" class="city-map-img">
+
+          <!-- Hotspots (percent positions tuned for your image 612×456) -->
+          <div class="hotspot hs-park" data-zone="park" style="top:18%; left:14%;" aria-label="Park" tabindex="0"></div>
+          <div class="hotspot hs-hospital" data-zone="hospital" style="top:18%; left:78%;" aria-label="Hospital" tabindex="0"></div>
+          <div class="hotspot hs-mall" data-zone="mall" style="top:52%; left:50%;" aria-label="Mall" tabindex="0"></div>
+          <div class="hotspot hs-school" data-zone="school" style="top:78%; left:74%;" aria-label="School" tabindex="0"></div>
+          <div class="hotspot hs-traffic" data-zone="traffic" style="top:44%; left:66%;" aria-label="Traffic" tabindex="0"></div>
+        </div>
+
+        <!-- tooltip overlay (outside wrapper so it doesn't scale) -->
+        <div id="mapTooltip" class="map-tooltip" aria-hidden="true"></div>
+      </div>
+
+      <div class="map-legend">
+        <div><span class="legend-dot park"></span> Park</div>
+        <div><span class="legend-dot hospital"></span> Hospital</div>
+        <div><span class="legend-dot mall"></span> Mall</div>
+        <div><span class="legend-dot school"></span> School</div>
+        <div><span class="legend-dot traffic"></span> Traffic</div>
+      </div>
+    </section>
+
+    <!-- PAGE 4: FEEDBACK -->
+    <section id="page4" class="page" aria-labelledby="feedbackTitle">
+      <h1 id="feedbackTitle" class="page-title">Feedback & Citizen Connect</h1>
+
+      <form id="feedbackForm" class="card form-card" novalidate>
+        <div class="form-row">
+          <label for="fbName">Name</label>
+          <input id="fbName" name="name" type="text" required minlength="3" />
+          <div class="form-error" id="errName"></div>
+        </div>
+
+        <div class="form-row">
+          <label for="fbEmail">Email</label>
+          <input id="fbEmail" name="email" type="email" required />
+          <div class="form-error" id="errEmail"></div>
+        </div>
+
+        <div class="form-row">
+          <label for="fbMessage">Message</label>
+          <textarea id="fbMessage" name="message" rows="5" required minlength="10"></textarea>
+          <div class="form-error" id="errMessage"></div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Submit Feedback</button>
+          <button type="button" id="resetForm" class="btn">Reset</button>
+        </div>
+      </form>
+
+      <div id="thanksBlock" class="card" style="display:none">
+        <h3>Thank you</h3>
+        <p>Your feedback will help improve the city. (Simulation — client-side only.)</p>
+        <button id="thanksClose" class="btn">Close</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- GLOBAL MODAL -->
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal card" role="document">
+      <h2 id="modalTitle">Title</h2>
+      <div id="modalMessage"></div>
+      <div class="modal-actions">
+        <button id="modalOk" class="btn primary">OK</button>
+        <button id="modalCancel" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

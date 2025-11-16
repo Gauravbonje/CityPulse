@@ -1,0 +1,217 @@
+/* CityPulse — final polished styling (dark theme + interactive map + vehicles + light theme) */
+
+/* Variables (dark default) */
+:root{
+  --bg:#0f1724;
+  --card:#0b1b2b;
+  --muted:#9aa9bb;
+  --text:#e6eef6;
+  --accent:#38bdf8;
+  --radius:12px;
+  --hot-park: rgb(60,180,100);
+  --hot-hospital: rgb(240,100,100);
+  --hot-mall: rgb(160,100,240);
+  --hot-school: rgb(70,140,220);
+  --hot-traffic: rgb(255,160,50);
+}
+
+/* Light theme override (applied when body.light is present) */
+body.light {
+  --bg: #f6f9fb;
+  --card: #ffffff;
+  --muted: #5b6b7a;
+  --text: #0b1220;
+  --accent: #0ea5ff;
+  --hot-park: #16a34a;
+  --hot-hospital: #ef4444;
+  --hot-mall: #7c3aed;
+  --hot-school: #2563eb;
+  --hot-traffic: #f59e0b;
+}
+
+/* Base */
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.container{max-width:1200px;margin:22px auto;padding:0 18px}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;position:sticky;top:0;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-bottom:1px solid rgba(255,255,255,0.02);z-index:100}
+.brand{font-weight:700;font-size:18px}
+.nav{display:flex;gap:8px}
+.nav-btn{border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+.nav-btn.active{color:var(--accent);background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.08)}
+.controls{display:flex;gap:8px}
+.control-btn{padding:6px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);cursor:pointer}
+
+/* Pages */
+.page{display:none}
+.page.active{display:block}
+.page-title{font-size:24px;margin:6px 0 18px}
+
+/* Cards */
+.card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:0 12px 30px rgba(2,6,23,0.15);border:1px solid rgba(255,255,255,0.02)}
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.card-title{color:var(--muted);font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.icon{width:18px;height:18px;opacity:0.95}
+.meter-bg{background:rgba(255,255,255,0.03);height:10px;border-radius:6px;overflow:hidden;margin:8px 0}
+.meter-fill{height:100%;width:0;background:var(--accent);transition:width .6s ease}
+.update-row{display:flex;justify-content:space-between;margin-top:14px;color:var(--muted);font-size:14px}
+
+/* Alerts */
+.news-ticker{overflow:hidden;padding:10px;border-radius:10px;margin-bottom:14px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+#tickerContent{display:inline-block;white-space:nowrap;color:var(--muted);animation:ticker 14s linear infinite}
+@keyframes ticker{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+.controls-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.filter-bar{display:flex;gap:8px}
+.filter-btn{padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);cursor:pointer}
+.filter-btn.active{background:var(--accent);color:#000;border-color:rgba(56,189,248,0.12)}
+.sort-block{display:flex;gap:8px;align-items:center}
+#sortSelect{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)}
+.alert-list{display:flex;flex-direction:column;gap:12px}
+.alert-card{padding:14px;border-radius:10px;border-left:4px solid var(--accent);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);opacity:0;transform:translateY(8px);animation:fadeIn .28s forwards}
+@keyframes fadeIn{to{opacity:1;transform:none}}
+.alert-type{font-size:13px;color:var(--muted);font-weight:700}
+.alert-msg{font-size:16px;margin:6px 0 0}
+.alert-time{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* MAP CONTROLS */
+.map-controls{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.map-ctl{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:var(--muted);padding:6px 10px;border-radius:8px;cursor:pointer}
+.map-hint{color:var(--muted);margin-left:8px;font-size:13px}
+
+/* Map container */
+.map-blueprint-container{position:relative;width:100%;height:62vh;min-height:420px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.02);background:#07121a}
+.map-wrapper{position:absolute;inset:0;transform-origin:0 0;will-change:transform;}
+
+/* image */
+.city-map-img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(.95) brightness(.9);opacity:0.9}
+
+/* Hotspot: glass + soft neon glow (Option A) */
+.hotspot{
+  position:absolute;width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:2px solid rgba(255,255,255,0.05);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter: blur(6px);
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  z-index:120;
+}
+/* inner small ring */
+.hotspot::after{content:"";width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.06);background:transparent;display:block;}
+
+/* colors and glow by type using CSS variables */
+.hs-park{box-shadow:0 8px 38px rgba(60,180,100,0.12);border-color:color-mix(in srgb, var(--hot-park) 40%, rgba(255,255,255,0.05));}
+.hs-park::after{border-color:rgba(60,180,100,0.9)}
+.hs-hospital{box-shadow:0 8px 38px rgba(240,100,100,0.12);border-color:color-mix(in srgb, var(--hot-hospital) 40%, rgba(255,255,255,0.05));}
+.hs-hospital::after{border-color:rgba(240,100,100,0.9)}
+.hs-mall{box-shadow:0 8px 38px rgba(160,100,240,0.12);border-color:color-mix(in srgb, var(--hot-mall) 40%, rgba(255,255,255,0.05));}
+.hs-mall::after{border-color:rgba(160,100,240,0.9)}
+.hs-school{box-shadow:0 8px 38px rgba(70,140,220,0.12);border-color:color-mix(in srgb, var(--hot-school) 40%, rgba(255,255,255,0.05));}
+.hs-school::after{border-color:rgba(70,140,220,0.9)}
+.hs-traffic{box-shadow:0 8px 38px rgba(255,160,50,0.12);border-color:color-mix(in srgb, var(--hot-traffic) 40%, rgba(255,255,255,0.05));}
+.hs-traffic::after{border-color:rgba(255,160,50,0.9)}
+
+/* hover and pulse */
+.hotspot:hover{transform:scale(1.12);box-shadow:0 24px 44px rgba(0,0,0,0.25)}
+.hotspot.pulse::before{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;
+  width:48px;height:48px;opacity:0.22;animation:pulse 2s ease-out infinite;
+}
+@keyframes pulse{0%{transform:translate(-50%,-50%) scale(1);opacity:.28}70%{transform:translate(-50%,-50%) scale(1.9);opacity:0}100%{opacity:0}}
+
+/* tooltip overlay */
+.map-tooltip{position:fixed;padding:10px 12px;border-radius:10px;background:linear-gradient(180deg, rgba(13,22,37,0.98), rgba(13,22,37,0.95));border:1px solid rgba(255,255,255,0.04);color:var(--muted);font-size:13px;pointer-events:none;transform:translate(-50%,-120%);opacity:0;transition:opacity .12s ease;z-index:300}
+
+/* legend */
+.map-legend{display:flex;gap:18px;margin-top:12px;color:var(--muted);font-size:13px;align-items:center}
+.legend-dot{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:8px;opacity:0.95}
+.legend-dot.park{background:var(--hot-park)}
+.legend-dot.hospital{background:var(--hot-hospital)}
+.legend-dot.mall{background:var(--hot-mall)}
+.legend-dot.school{background:var(--hot-school)}
+.legend-dot.traffic{background:var(--hot-traffic)}
+
+/* Vehicles (animated dots along roads)
+   We'll create generic vehicle elements and assign them animations for the chosen paths.
+   Animations use percent-based translate to work with responsive image size.
+*/
+.vehicle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.45), 0 0 10px rgba(255,255,255,0.02) inset;
+  z-index:110;
+  transform: translate(-50%, -50%);
+  opacity: 0.95;
+}
+
+/* vehicle types (appearance) */
+.vehicle.car { background: rgba(56,189,248,0.95); box-shadow: 0 6px 22px rgba(56,189,248,0.22); }
+.vehicle.bus { background: rgba(250,204,21,0.95); box-shadow: 0 6px 22px rgba(250,204,21,0.18); }
+.vehicle.ambulance { background: rgba(240,100,100,0.95); box-shadow: 0 6px 22px rgba(240,100,100,0.18); }
+
+/* Path A (River-side Highway) - keyframes move using percent-based transforms */
+@keyframes pathA {
+  0%   { transform: translate(-50%,-50%) translate(62%, 78%); }
+  12%  { transform: translate(-50%,-50%) translate(66%, 74%); }
+  30%  { transform: translate(-50%,-50%) translate(70%, 64%); }
+  50%  { transform: translate(-50%,-50%) translate(74%, 56%); }
+  70%  { transform: translate(-50%,-50%) translate(78%, 46%); }
+  100% { transform: translate(-50%,-50%) translate(82%, 36%); }
+}
+
+/* Path B (Central East-West Main Road) */
+@keyframes pathB {
+  0%   { transform: translate(-50%,-50%) translate(12%, 36%); }
+  20%  { transform: translate(-50%,-50%) translate(30%, 36%); }
+  40%  { transform: translate(-50%,-50%) translate(44%, 36%); }
+  60%  { transform: translate(-50%,-50%) translate(60%, 36%); }
+  80%  { transform: translate(-50%,-50%) translate(76%, 36%); }
+  100% { transform: translate(-50%,-50%) translate(88%, 36%); }
+}
+
+/* Path C (North-South main) */
+@keyframes pathC {
+  0%   { transform: translate(-50%,-50%) translate(38%, 10%); }
+  25%  { transform: translate(-50%,-50%) translate(38%, 28%); }
+  50%  { transform: translate(-50%,-50%) translate(38%, 46%); }
+  75%  { transform: translate(-50%,-50%) translate(38%, 64%); }
+  100% { transform: translate(-50%,-50%) translate(38%, 88%); }
+}
+
+/* Path D (Roundabout / Curve on left) */
+@keyframes pathD {
+  0%   { transform: translate(-50%,-50%) translate(8%, 30%); }
+  20%  { transform: translate(-50%,-50%) translate(12%, 28%); }
+  40%  { transform: translate(-50%,-50%) translate(20%, 32%); }
+  60%  { transform: translate(-50%,-50%) translate(18%, 40%); }
+  80%  { transform: translate(-50%,-50%) translate(10%, 44%); }
+ 100%  { transform: translate(-50%,-50%) translate(8%, 30%); }
+}
+
+/* assign vehicles to paths with different durations and easing */
+.v-pathA { animation: pathA 12s linear infinite; }
+.v-pathB { animation: pathB 10s linear infinite; }
+.v-pathC { animation: pathC 14s linear infinite; }
+.v-pathD { animation: pathD 9s linear infinite; }
+
+/* small responsive tweak */
+@media (max-width:900px){
+  .map-blueprint-container { height: 54vh; min-height:320px; }
+  .hotspot { width:40px;height:40px;border-radius:10px; }
+  .vehicle { width:10px;height:10px; }
+}
+
+/* Feedback form */
+.form-card{display:flex;flex-direction:column;gap:12px}
+.form-row{display:flex;flex-direction:column}
+label{font-size:14px;color:var(--muted);margin-bottom:6px}
+input[type="text"],input[type="email"],textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text);outline:none}
+.form-actions{display:flex;gap:10px;justify-content:flex-end}
+.btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;background:rgba(255,255,255,0.03);color:var(--text)}
+.btn.primary{background:var(--accent);color:#000;font-weight:700}
+
+/* modal */
+.modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:500}
+.modal{max-width:520px;padding:18px}
